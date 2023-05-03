@@ -23,8 +23,7 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   Future getSubjects() async {
-    //http://IP_PC:3000/subject/all
-    String path = 'http://192.168.0.115:3002/subject/all';
+    String path = 'http://192:168:56:1:3002/subject/all';
     var response = await Dio().get(path);
     var registros = response.data as List;
     for (var sub in registros) {
@@ -36,8 +35,7 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   Future deleteSubject(String idSubject) async {
-    //http://IP_PC:3000/subject/all
-    String path = 'http://http://192.168.0.115:3002/subject/$idSubject';
+    String path = 'http://192:168:56:1:3002/subject/$idSubject';
     var response = await Dio().delete(path);
     if (response.statusCode == 200) {
       print('Subject deleted');

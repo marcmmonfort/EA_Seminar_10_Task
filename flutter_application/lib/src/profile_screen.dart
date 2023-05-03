@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -7,9 +9,28 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // Algunos datos de ejemplo
-  final String _name = "SEMINARI 10-Flutter";
-  final String _email = "flutter@gmail.com";
-  final String _bio = "Desarrolladores de software apasionados por Flutter! :)";
+  String _name = "SEMINARI 10-Flutter";
+  String _email = "flutter@gmail.com";
+
+  @override
+  void initState() {
+    super.initState();
+    getUserInfo();
+  }
+
+  Future getUserInfo() async {
+    // Obtain the ID of the user from the local storage (shared preferences) ...
+    SharedPreferences userInformation = await SharedPreferences.getInstance();
+    String ?idUser = userInformation.getString('userId');
+    String path = 'http://192:168:56:1:3002/user/$idUser';
+    var response = await Dio().get(path);
+    if (response.statusCode == 200) {
+      setState(() {
+        this._name = response.data['name'];
+        this._email = response.data['email'];
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +68,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Text(
               _email,
               style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              _bio,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
             ),
           ),
         ],
